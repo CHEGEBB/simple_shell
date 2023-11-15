@@ -52,7 +52,9 @@ void release_data_struct(data_t *data, int free_all)
 {
 	free_string_array(data->args);
 	data->args = NULL;
+	free(data->path_loc);
 	data->path_loc = NULL;
+
 	if (free_all)
 	{
 		if (!data->cmd_buf)
