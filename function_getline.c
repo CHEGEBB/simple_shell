@@ -6,7 +6,7 @@
 *
 * Return: count of bytes read.
 */
-int _custom_getline(data_of_program *data)
+int _getline(data_of_program *data)
 {
 	char buff[BUFFER_SIZE] = {'\0'};
 	static char *commands_list[10] = {NULL}; /* Array to store parsed commands */
