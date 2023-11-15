@@ -1,97 +1,107 @@
 #include "shell.h"
 
 /**
- * _myexit - exits the shell
- * @info: Structure containing potential arguments. Used to maintain
- *          constant function prototype.
- *  Return: exits with a given exit status
- *         (0) if info.argv[0] != "exit"
+ * @brief Exit the shell.
+ *
+ * Exits the shell with a given exit status, 0 if info_struct->argv[0] != "exit".
+ *
+ * @param info_struct Structure containing potential arguments.
+ * @return Exits with the specified exit status.
  */
-int _myexit(info_t *info)
+int exit_shell(info_t *info_struct)
 {
-	int exitcheck;
+	int exit_status;
 
-	if (info->argv[1])  /* If there is an exit arguement */
+	if (info_struct->argv[1])  /* Check if there is an exit argument */
 	{
-		exitcheck = _erratoi(info->argv[1]);
-		if (exitcheck == -1)
+		exit_status = _erratoi(info_struct->argv[1]);
+		if (exit_status == -1)
 		{
-			info->status = 2;
-			print_error(info, "Illegal number: ");
-			_eputs(info->argv[1]);
+			info_struct->status = 2;
+			print_error(info_struct, "Illegal number: ");
+			_eputs(info_struct->argv[1]);
 			_eputchar('\n');
 			return (1);
 		}
-		info->err_num = _erratoi(info->argv[1]);
+		info_struct->err_num = _erratoi(info_struct->argv[1]);
 		return (-2);
 	}
-	info->err_num = -1;
+	info_struct->err_num = -1;
 	return (-2);
 }
 
 /**
- * _mycd - changes the current directory of the process
- * @info: Structure containing potential arguments. Used to maintain
- *          constant function prototype.
- *  Return: Always 0
+ * @brief Change the current directory of the process.
+ *
+ * Changes the current directory of the process based on the provided arguments.
+ *
+ * @param info_struct Structure containing potential arguments.
+ * @return Always returns 0.
  */
-int _mycd(info_t *info)
+int change_directory(info_t *info_struct)
 {
-	char *s, *dir, buffer[1024];
-	int chdir_ret;
+	char *current_dir, *target_dir, buffer[1024];
+	int chdir_result;
 
-	s = getcwd(buffer, 1024);
-	if (!s)
-		_puts("TODO: >>getcwd failure emsg here<<\n");
-	if (!info->argv[1])
+	current_dir = getcwd(buffer, 1024);
+	if (!current_dir)
+		_puts("TODO: Handle getcwd failure message here\n");
+
+	if (!info_struct->argv[1])
 	{
-		dir = _getenv(info, "HOME=");
-		if (!dir)
-			chdir_ret = /* TODO: what should this be? */
-				chdir((dir = _getenv(info, "PWD=")) ? dir : "/");
+		target_dir = _getenv(info_struct, "HOME=");
+		if (!target_dir)
+			chdir_result = /* TODO: Handle this case appropriately */
+				chdir((target_dir = _getenv(info_struct, "PWD=")) ? target_dir : "/");
 		else
-			chdir_ret = chdir(dir);
+			chdir_result = chdir(target_dir);
 	}
-	else if (_strcmp(info->argv[1], "-") == 0)
+	else if (_strcmp(info_struct->argv[1], "-") == 0)
 	{
-		if (!_getenv(info, "OLDPWD="))
+		if (!_getenv(info_struct, "OLDPWD="))
 		{
-			_puts(s);
+			_puts(current_dir);
 			_putchar('\n');
 			return (1);
 		}
-		_puts(_getenv(info, "OLDPWD=")), _putchar('\n');
-		chdir_ret = /* TODO: what should this be? */
-			chdir((dir = _getenv(info, "OLDPWD=")) ? dir : "/");
+		_puts(_getenv(info_struct, "OLDPWD=")), _putchar('\n');
+		chdir_result = /* TODO: Handle this case appropriately */
+			chdir((target_dir = _getenv(info_struct, "OLDPWD=")) ? target_dir : "/");
 	}
 	else
-		chdir_ret = chdir(info->argv[1]);
-	if (chdir_ret == -1)
+		chdir_result = chdir(info_struct->argv[1]);
+
+	if (chdir_result == -1)
 	{
-		print_error(info, "can't cd to ");
-		_eputs(info->argv[1]), _eputchar('\n');
+		print_error(info_struct, "can't cd to ");
+		_eputs(info_struct->argv[1]), _eputchar('\n');
 	}
 	else
 	{
-		_setenv(info, "OLDPWD", _getenv(info, "PWD="));
-		_setenv(info, "PWD", getcwd(buffer, 1024));
+		_setenv(info_struct, "OLDPWD", _getenv(info_struct, "PWD="));
+		_setenv(info_struct, "PWD", getcwd(buffer, 1024));
 	}
 	return (0);
 }
 
 /**
- * _myhelp - changes the current directory of the process
- * @info: Structure containing potential arguments. Used to maintain
- *          constant function prototype.
- *  Return: Always 0
+ * @brief Display help information.
+ *
+ * Displays help information based on the provided arguments.
+ *
+ * @param info_struct Structure containing potential arguments.
+ * @return Always returns 0.
  */
-int _myhelp(info_t *info)
+int display_help(info_t *info_struct)
 {
 	char **arg_array;
 
-	arg_array = info->argv;
-	_puts("help call works. Function not yet implemented \n");
+	arg_array = info_struct->argv;
+	_puts("Help call works. Function not yet implemented \n");
+
+	/* Temporary workaround to avoid unused variable warning */
 	if (0)
-		_puts(*arg_array); /* temp att_unused workaround */
+		_puts(*arg_array);
+
 	return (0);
 }
