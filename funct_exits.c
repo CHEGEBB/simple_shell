@@ -1,74 +1,84 @@
 #include "shell.h"
 
 /**
- **_strncpy - copies a string
- *@dest: the destination string to be copied to
- *@src: the source string
- *@n: the amount of characters to be copied
- *Return: the concatenated string
+ * @brief Copy a string up to a specified number of characters.
+ *
+ * Copies the source string to the destination string up to the given number of characters.
+ *
+ * @param destination_str: The destination string to be copied to.
+ * @param source_str: The source string.
+ * @param max_chars: The maximum number of characters to be copied.
+ * @return The concatenated string.
  */
-char *_strncpy(char *dest, char *src, int n)
+char *copy_string(char *destination_str, char *source_str, int max_chars)
 {
-	int i, j;
-	char *s = dest;
+	int index_dest = 0, index_src;
+	char *start = destination_str;
 
-	i = 0;
-	while (src[i] != '\0' && i < n - 1)
+	index_src = 0;
+	while (source_str[index_src] != '\0' && index_src < max_chars - 1)
 	{
-		dest[i] = src[i];
-		i++;
+		destination_str[index_dest] = source_str[index_src];
+		index_dest++;
+		index_src++;
 	}
-	if (i < n)
+	if (index_src < max_chars)
 	{
-		j = i;
-		while (j < n)
+		int index_fill = index_src;
+		while (index_fill < max_chars)
 		{
-			dest[j] = '\0';
-			j++;
+			destination_str[index_fill] = '\0';
+			index_fill++;
 		}
 	}
-	return (s);
+	return (start);
 }
 
 /**
- **_strncat - concatenates two strings
- *@dest: the first string
- *@src: the second string
- *@n: the amount of bytes to be maximally used
- *Return: the concatenated string
+ * @brief Concatenate two strings up to a specified number of bytes.
+ *
+ * Concatenates the second string to the first string up to the given number of bytes.
+ *
+ * @param first_str: The first string.
+ * @param second_str: The second string.
+ * @param max_bytes: The maximum number of bytes to be used.
+ * @return The concatenated string.
  */
-char *_strncat(char *dest, char *src, int n)
+char *concatenate_strings(char *first_str, char *second_str, int max_bytes)
 {
-	int i, j;
-	char *s = dest;
+	int index_first = 0, index_second = 0;
+	char *start = first_str;
 
-	i = 0;
-	j = 0;
-	while (dest[i] != '\0')
-		i++;
-	while (src[j] != '\0' && j < n)
+	while (first_str[index_first] != '\0')
+		index_first++;
+
+	while (second_str[index_second] != '\0' && index_second < max_bytes)
 	{
-		dest[i] = src[j];
-		i++;
-		j++;
+		first_str[index_first] = second_str[index_second];
+		index_first++;
+		index_second++;
 	}
-	if (j < n)
-		dest[i] = '\0';
-	return (s);
+	if (index_second < max_bytes)
+		first_str[index_first] = '\0';
+
+	return (start);
 }
 
 /**
- **_strchr - locates a character in a string
- *@s: the string to be parsed
- *@c: the character to look for
- *Return: (s) a pointer to the memory area s
+ * @brief Locate a character in a string.
+ *
+ * Locates the specified character in the given string.
+ *
+ * @param input_str: The string to be parsed.
+ * @param target_char: The character to look for.
+ * @return A pointer to the memory area containing the character.
  */
-char *_strchr(char *s, char c)
+char *find_character(char *input_str, char target_char)
 {
 	do {
-		if (*s == c)
-			return (s);
-	} while (*s++ != '\0');
+		if (*input_str == target_char)
+			return (input_str);
+	} while (*input_str++ != '\0');
 
 	return (NULL);
 }
