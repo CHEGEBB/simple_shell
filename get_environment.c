@@ -1,93 +1,101 @@
 #include "shell.h"
 
 /**
- * get_environ - returns the string array copy of our environ
- * @info: Structure containing potential arguments. Used to maintain
- *          constant function prototype.
- * Return: Always 0
+ * @brief Retrieve the string array copy of the environment.
+ *
+ * Returns the string array copy of the environment stored in the information struct.
+ *
+ * @param info_struct: The structure containing potential arguments.
+ * @return The environment string array.
  */
-char **get_environ(info_t *info)
+char **get_environment(info_t *info_struct)
 {
-	if (!info->environ || info->env_changed)
+	if (!info_struct->environment || info_struct->environment_changed)
 	{
-		info->environ = list_to_strings(info->env);
-		info->env_changed = 0;
+		info_struct->environment = list_to_strings(info_struct->env);
+		info_struct->environment_changed = 0;
 	}
 
-	return (info->environ);
+	return (info_struct->environment);
 }
 
 /**
- * _unsetenv - Remove an environment variable
- * @info: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- *  Return: 1 on delete, 0 otherwise
- * @var: the string env var property
+ * @brief Remove an environment variable.
+ *
+ * Removes the specified environment variable from the environment list.
+ *
+ * @param info_struct: The structure containing potential arguments.
+ * @param env_var: The string representing the environment variable.
+ * @return 1 on successful deletion, 0 otherwise.
  */
-int _unsetenv(info_t *info, char *var)
+int remove_environment_variable(info_t *info_struct, char *env_var)
 {
-	list_t *node = info->env;
-	size_t i = 0;
-	char *p;
+	list_t *current_node = info_struct->env;
+	size_t index = 0;
+	char *position;
 
-	if (!node || !var)
+	if (!current_node || !env_var)
 		return (0);
 
-	while (node)
+	while (current_node)
 	{
-		p = starts_with(node->str, var);
-		if (p && *p == '=')
+		position = starts_with(current_node->str, env_var);
+		if (position && *position == '=')
 		{
-			info->env_changed = delete_node_at_index(&(info->env), i);
-			i = 0;
-			node = info->env;
+			info_struct->environment_changed = delete_node_at_index(&(info_struct->env), index);
+			index = 0;
+			current_node = info_struct->env;
 			continue;
 		}
-		node = node->next;
-		i++;
+		current_node = current_node->next;
+		index++;
 	}
-	return (info->env_changed);
+	return (info_struct->environment_changed);
 }
 
 /**
- * _setenv - Initialize a new environment variable,
- *             or modify an existing one
- * @info: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- * @var: the string env var property
- * @value: the string env var value
- *  Return: Always 0
+ * @brief Set or modify an environment variable.
+ *
+ * Initializes a new environment variable or modifies an existing one.
+ *
+ * @param info_struct: The structure containing potential arguments.
+ * @param env_var: The string representing the environment variable.
+ * @param value: The string representing the environment variable value.
+ * @return 0 on success, 1 on error.
  */
-int _setenv(info_t *info, char *var, char *value)
+int set_environment_variable(info_t *info_struct, char *env_var, char *value)
 {
-	char *buf = NULL;
-	list_t *node;
-	char *p;
+	char *buffer = NULL;
+	list_t *current_node;
+	char *position;
 
-	if (!var || !value)
-		return (0);
-
-	buf = malloc(_strlen(var) + _strlen(value) + 2);
-	if (!buf)
+	if (!env_var || !value)
 		return (1);
-	_strcpy(buf, var);
-	_strcat(buf, "=");
-	_strcat(buf, value);
-	node = info->env;
-	while (node)
+
+	buffer = malloc(_strlen(env_var) + _strlen(value) + 2);
+	if (!buffer)
+		return (1);
+
+	_strcpy(buffer, env_var);
+	_strcat(buffer, "=");
+	_strcat(buffer, value);
+
+	current_node = info_struct->env;
+	while (current_node)
 	{
-		p = starts_with(node->str, var);
-		if (p && *p == '=')
+		position = starts_with(current_node->str, env_var);
+		if (position && *position == '=')
 		{
-			free(node->str);
-			node->str = buf;
-			info->env_changed = 1;
+			free(current_node->str);
+			current_node->str = buffer;
+			info_struct->environment_changed = 1;
 			return (0);
 		}
-		node = node->next;
+		current_node = current_node->next;
 	}
-	add_node_end(&(info->env), buf, 0);
-	free(buf);
-	info->env_changed = 1;
+	add_node_end(&(info_struct->env), buffer, 0);
+	free(buffer);
+	info_struct->environment_changed = 1;
+
 	return (0);
 }
