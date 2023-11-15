@@ -1,50 +1,50 @@
 #include "shell.h"
 
 /**
-* _getline - read one line from the prompt.
-* @data: struct for the program's data
+* Functgetline - function to read one line from the prompt with enhanced features.
+* @data: structure containing program's data
 *
-* Return: reading counting bytes.
+* Return: count of bytes read.
 */
-int _getline(data_of_program *data)
+int _custom_getline(data_of_program *data)
 {
 	char buff[BUFFER_SIZE] = {'\0'};
-	static char *array_commands[10] = {NULL};
-	static char array_operators[10] = {'\0'};
+	static char *commands_list[10] = {NULL}; /* Array to store parsed commands */
+	static char operators_array[10] = {'\0'}; /* Array to store logical operators */
 	ssize_t bytes_read, i = 0;
 
-	/* check if doesnot exist more commands in the array */
-	/* and checks the logical operators */
-	if (!array_commands[0] || (array_operators[0] == '&' && errno != 0) ||
-		(array_operators[0] == '|' && errno == 0))
+	/* Verify the existence of more commands in the array */
+	/* Check for logical operators */
+	if (!commands_list[0] || (operators_array[0] == '&' && errno != 0) ||
+		(operators_array[0] == '|' && errno == 0))
 	{
-		/*free the memory allocated in the array if it exists */
-		for (i = 0; array_commands[i]; i++)
+		/* Free allocated memory in the array if it exists */
+		for (i = 0; commands_list[i]; i++)
 		{
-			free(array_commands[i]);
-			array_commands[i] = NULL;
+			free(commands_list[i]);
+			commands_list[i] = NULL;
 		}
 
-		/* read from the file descriptor int to buff */
+		/* Read from the file descriptor into buff */
 		bytes_read = read(data->file_descriptor, &buff, BUFFER_SIZE - 1);
 		if (bytes_read == 0)
 			return (-1);
 
-		/* split lines for \n or ; */
+		/* Split lines for '\n' or ';' */
 		i = 0;
 		do {
-			array_commands[i] = str_duplicate(_strtok(i ? NULL : buff, "\n;"));
-			/*checks and split for && and || operators*/
-			i = check_logic_ops(array_commands, i, array_operators);
-		} while (array_commands[i++]);
+			commands_list[i] = str_duplicate(_strtok(i ? NULL : buff, "\n;"));
+			/* Check and split for '&&' and '||' operators */
+			i = verify_and_split_logic(commands_list, i, operators_array);
+		} while (commands_list[i++]);
 	}
 
-	/*obtains the next command (command 0) and remove it for the array*/
-	data->input_line = array_commands[0];
-	for (i = 0; array_commands[i]; i++)
+	/* Obtain the next command (command 0) and remove it from the array */
+	data->input_line = commands_list[0];
+	for (i = 0; commands_list[i]; i++)
 	{
-		array_commands[i] = array_commands[i + 1];
-		array_operators[i] = array_operators[i + 1];
+		commands_list[i] = commands_list[i + 1];
+		operators_array[i] = operators_array[i + 1];
 	}
 
 	return (str_length(data->input_line));
@@ -52,42 +52,42 @@ int _getline(data_of_program *data)
 
 
 /**
-* check_logic_ops - checks and split for && and || operators
-* @array_commands: array of the commands.
-* @i: index in the array_commands to be checked
-* @array_operators: array of the logical operators for each previous command
+* verify_and_split_logic - function to check and split for '&&' and '||' operators.
+* @commands_list: array of commands.
+* @i: index in the commands_list to be checked.
+* @operators_array: array of logical operators for each previous command.
 *
-* Return: index of the last command in the array_commands.
+* Return: index of the last command in the commands_list.
 */
-int check_logic_ops(char *array_commands[], int i, char array_operators[])
+int verify_and_split_logic(char *commands_list[], int i, char operators_array[])
 {
 	char *temp = NULL;
 	int j;
 
-	/* checks for the & char in the command line*/
-	for (j = 0; array_commands[i] != NULL  && array_commands[i][j]; j++)
+	/* Check for the '&' char in the command line */
+	for (j = 0; commands_list[i] != NULL && commands_list[i][j]; j++)
 	{
-		if (array_commands[i][j] == '&' && array_commands[i][j + 1] == '&')
+		if (commands_list[i][j] == '&' && commands_list[i][j + 1] == '&')
 		{
-			/* split the line when chars && was found */
-			temp = array_commands[i];
-			array_commands[i][j] = '\0';
-			array_commands[i] = str_duplicate(array_commands[i]);
-			array_commands[i + 1] = str_duplicate(temp + j + 2);
+			/* Split the line when '&&' is found */
+			temp = commands_list[i];
+			commands_list[i][j] = '\0';
+			commands_list[i] = str_duplicate(commands_list[i]);
+			commands_list[i + 1] = str_duplicate(temp + j + 2);
 			i++;
-			array_operators[i] = '&';
+			operators_array[i] = '&';
 			free(temp);
 			j = 0;
 		}
-		if (array_commands[i][j] == '|' && array_commands[i][j + 1] == '|')
+		if (commands_list[i][j] == '|' && commands_list[i][j + 1] == '|')
 		{
-			/* split the line when chars || was found */
-			temp = array_commands[i];
-			array_commands[i][j] = '\0';
-			array_commands[i] = str_duplicate(array_commands[i]);
-			array_commands[i + 1] = str_duplicate(temp + j + 2);
+			/* Split the line when '||' is found */
+			temp = commands_list[i];
+			commands_list[i][j] = '\0';
+			commands_list[i] = str_duplicate(commands_list[i]);
+			commands_list[i + 1] = str_duplicate(temp + j + 2);
 			i++;
-			array_operators[i] = '|';
+			operators_array[i] = '|';
 			free(temp);
 			j = 0;
 		}
