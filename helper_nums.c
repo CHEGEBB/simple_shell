@@ -2,8 +2,8 @@
 
 /**
  * long_to_string - Convert a long integer to a string representation in the specified base.
- * @number: The long integer to be converted.
- * @string: The buffer to store the converted string.
+ * @num: The long integer to be converted.
+ * @str: The buffer to store the converted string.
  * @base: The base for the conversion.
  * Return: void
  */
