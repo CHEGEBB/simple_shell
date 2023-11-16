@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # 0x16C Simple Shell Project
 =======
 simple shell
