@@ -16,8 +16,8 @@ Writing a simple shell can be a great learning experience for anyone interested 
 A shell is a program that acts as an interface between the user and the operating system. A shell allows the user to interact with the operating system by accepting commands entered by the user from the keyboard, verifying if the inputs from the user are correct and executing them. Generally, a shell is a user interface that allows us to use computer resources such as memory. It can take two forms command-line interface such as Bash or graphical user interface such as Windows Office.
 
 ### Authors
-a) `@waltertaya`
-b) `@Baruk1-netizen`
+a) `CHEGEBB`
+b) `ouiwish`
 
 
 ## Requirements
@@ -62,26 +62,3 @@ b) `@Baruk1-netizen`
 - `wait4`
 - `write`
 
-## Testing
-
-The shell will be tested in both interactive and non-interactive modes.
-
-### Interactive Mode
-
-The shell should prompt the user for input and execute the commands that are entered.
-
-```shell
-waltermitty@waltermitty-VivoBook-15-ASUS-Laptop-X540UAR:~/shell$ gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
-waltermitty@waltermitty-VivoBook-15-ASUS-Laptop-X540UAR:~/shell$ ./hsh
-$ls
-Attempt  AUTHORS  functions1.c	functions2.c  functions3.c  functions.c  helper_macros.h  hsh  main.c  manual_simple_shell  README.md  shell.h
-$pwd
-/home/waltermitty/shell
-$
-
-
-
-=======
-What is a shell?
-A shell is a program that acts as an interface between the user and the operating system. A shell allows the user to interact with the operating system by accepting commands entered by the user from the keyboard, verifying if the inputs from the user are correct and executing them. Generally, a shell is a user interface that allows us to use computer resources such as memory. It can take two forms command-line interface such as Bash or graphical user interface such as Windows Office.
->>>>>>> 16ac95ec55b189f6f3d78730a98343f4944135ff
